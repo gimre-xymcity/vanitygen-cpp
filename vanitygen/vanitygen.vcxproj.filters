@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="sha3\keccak.cpp">
+      <Filter>sha3</Filter>
+    </ClCompile>
+    <ClCompile Include="sha3\KeccakNISTInterface.cpp">
+      <Filter>sha3</Filter>
+    </ClCompile>
+    <ClCompile Include="sha3\KeccakSponge.cpp">
+      <Filter>sha3</Filter>
+    </ClCompile>
+    <ClCompile Include="ripemd160\ripemd160.cpp">
+      <Filter>ripemd160</Filter>
+    </ClCompile>
+    <ClCompile Include="base32\base32.cpp">
+      <Filter>base32</Filter>
+    </ClCompile>
+    <ClCompile Include="pcg\pcg_basic.c">
+      <Filter>pcg</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_0.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_1.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_add.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_cmov.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_copy.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_frombytes.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_invert.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_isnegative.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_isnonzero.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_mul.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_neg.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_pow22523.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_sq.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_sq2.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_sub.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\fe_tobytes.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_add.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_double_scalarmult.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_frombytes.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_madd.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_msub.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p1p1_to_p2.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p1p1_to_p3.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p2_0.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p2_dbl.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p3_0.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p3_dbl.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p3_to_cached.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p3_to_p2.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_p3_tobytes.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_precomp_0.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_scalarmult_base.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_sub.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\ge_tobytes.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\keypair.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\open.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\publickey.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\sc_muladd.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\sc_reduce.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\sign.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\verify.c">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="ref10\sha512-hash.cpp">
+      <Filter>ref10</Filter>
+    </ClCompile>
+    <ClCompile Include="cppformat\format.cc">
+      <Filter>cppformat</Filter>
+    </ClCompile>
+    <ClCompile Include="selftests.cpp" />
+    <ClCompile Include="nemkey.cpp" />
+    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="nemaddress.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="sha3">
+      <UniqueIdentifier>{d5cbce25-8bb3-4f6a-80de-65d5d02a1663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ripemd160">
+      <UniqueIdentifier>{ca3a8bad-2fc8-4728-b93a-3c498519fc8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="base32">
+      <UniqueIdentifier>{5d23669f-b7a6-4e84-899f-c04af6c25d80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pcg">
+      <UniqueIdentifier>{3bf41337-7b27-4e8b-a693-5f47de7aade6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ref10">
+      <UniqueIdentifier>{57cb60b7-a3c5-4aad-ba35-1531d7db1fd9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cppformat">
+      <UniqueIdentifier>{e49dd8c7-789b-49ba-b7fa-e8aa8c992f92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="leanmean">
+      <UniqueIdentifier>{4ed51764-3ec5-4fc4-941e-a0b4db0e79cb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="sha3\KeccakF-1600-interface.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="sha3\KeccakNISTInterface.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="sha3\KeccakSponge.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="base32\base32.h">
+      <Filter>base32</Filter>
+    </ClInclude>
+    <ClInclude Include="pcg\pcg_basic.h">
+      <Filter>pcg</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\api.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\base.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\base2.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\crypto_hash_sha512.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\crypto_int32.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\crypto_int64.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\crypto_sign.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\crypto_uint32.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\crypto_uint64.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\crypto_verify_32.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\d.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\d2.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\fe.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\ge.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\ge_add.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\ge_madd.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\ge_msub.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\ge_p2_dbl.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\ge_sub.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\pow22523.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\pow225521.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\sc.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\sha512.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="ref10\sqrtm1.h">
+      <Filter>ref10</Filter>
+    </ClInclude>
+    <ClInclude Include="cppformat\format.h">
+      <Filter>cppformat</Filter>
+    </ClInclude>
+    <ClInclude Include="leanmean\optionparser.h">
+      <Filter>leanmean</Filter>
+    </ClInclude>
+    <ClInclude Include="selftests.h" />
+    <ClInclude Include="nemkey.h" />
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="nemaddress.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ref10\pow22523.q">
+      <Filter>ref10</Filter>
+    </None>
+    <None Include="ref10\q2h.sh">
+      <Filter>ref10</Filter>
+    </None>
+    <None Include="ref10\sqrtm1.py">
+      <Filter>ref10</Filter>
+    </None>
+  </ItemGroup>
+</Project>

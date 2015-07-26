@@ -1,0 +1,9 @@
+[Dd]ebug/
+[Rr]elease/
+*.suo
+*.sdf
+*.opensdf
+*.user
+*.psess
+*~
+*.swp

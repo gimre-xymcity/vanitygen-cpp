@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{96DF6B5D-F5A1-4904-BD64-D57C27CFCDAA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>vanitygen</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="base32\base32.cpp" />
+    <ClCompile Include="cppformat\format.cc" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="nemaddress.cpp" />
+    <ClCompile Include="nemkey.cpp" />
+    <ClCompile Include="pcg\pcg_basic.c" />
+    <ClCompile Include="ref10\fe_0.c" />
+    <ClCompile Include="ref10\fe_1.c" />
+    <ClCompile Include="ref10\fe_add.c" />
+    <ClCompile Include="ref10\fe_cmov.c" />
+    <ClCompile Include="ref10\fe_copy.c" />
+    <ClCompile Include="ref10\fe_frombytes.c" />
+    <ClCompile Include="ref10\fe_invert.c" />
+    <ClCompile Include="ref10\fe_isnegative.c" />
+    <ClCompile Include="ref10\fe_isnonzero.c" />
+    <ClCompile Include="ref10\fe_mul.c" />
+    <ClCompile Include="ref10\fe_neg.c" />
+    <ClCompile Include="ref10\fe_pow22523.c" />
+    <ClCompile Include="ref10\fe_sq.c" />
+    <ClCompile Include="ref10\fe_sq2.c" />
+    <ClCompile Include="ref10\fe_sub.c" />
+    <ClCompile Include="ref10\fe_tobytes.c" />
+    <ClCompile Include="ref10\ge_add.c" />
+    <ClCompile Include="ref10\ge_double_scalarmult.c" />
+    <ClCompile Include="ref10\ge_frombytes.c" />
+    <ClCompile Include="ref10\ge_madd.c" />
+    <ClCompile Include="ref10\ge_msub.c" />
+    <ClCompile Include="ref10\ge_p1p1_to_p2.c" />
+    <ClCompile Include="ref10\ge_p1p1_to_p3.c" />
+    <ClCompile Include="ref10\ge_p2_0.c" />
+    <ClCompile Include="ref10\ge_p2_dbl.c" />
+    <ClCompile Include="ref10\ge_p3_0.c" />
+    <ClCompile Include="ref10\ge_p3_dbl.c" />
+    <ClCompile Include="ref10\ge_p3_tobytes.c" />
+    <ClCompile Include="ref10\ge_p3_to_cached.c" />
+    <ClCompile Include="ref10\ge_p3_to_p2.c" />
+    <ClCompile Include="ref10\ge_precomp_0.c" />
+    <ClCompile Include="ref10\ge_scalarmult_base.c" />
+    <ClCompile Include="ref10\ge_sub.c" />
+    <ClCompile Include="ref10\ge_tobytes.c" />
+    <ClCompile Include="ref10\keypair.c" />
+    <ClCompile Include="ref10\open.c" />
+    <ClCompile Include="ref10\publickey.c" />
+    <ClCompile Include="ref10\sc_muladd.c" />
+    <ClCompile Include="ref10\sc_reduce.c" />
+    <ClCompile Include="ref10\sha512-hash.cpp" />
+    <ClCompile Include="ref10\sign.c" />
+    <ClCompile Include="ref10\verify.c" />
+    <ClCompile Include="ripemd160\ripemd160.cpp" />
+    <ClCompile Include="selftests.cpp" />
+    <ClCompile Include="sha3\keccak.cpp" />
+    <ClCompile Include="sha3\KeccakNISTInterface.cpp" />
+    <ClCompile Include="sha3\KeccakSponge.cpp" />
+    <ClCompile Include="utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="base32\base32.h" />
+    <ClInclude Include="cppformat\format.h" />
+    <ClInclude Include="leanmean\optionparser.h" />
+    <ClInclude Include="nemaddress.h" />
+    <ClInclude Include="nemkey.h" />
+    <ClInclude Include="pcg\pcg_basic.h" />
+    <ClInclude Include="ref10\api.h" />
+    <ClInclude Include="ref10\base.h" />
+    <ClInclude Include="ref10\base2.h" />
+    <ClInclude Include="ref10\crypto_hash_sha512.h" />
+    <ClInclude Include="ref10\crypto_int32.h" />
+    <ClInclude Include="ref10\crypto_int64.h" />
+    <ClInclude Include="ref10\crypto_sign.h" />
+    <ClInclude Include="ref10\crypto_uint32.h" />
+    <ClInclude Include="ref10\crypto_uint64.h" />
+    <ClInclude Include="ref10\crypto_verify_32.h" />
+    <ClInclude Include="ref10\d.h" />
+    <ClInclude Include="ref10\d2.h" />
+    <ClInclude Include="ref10\fe.h" />
+    <ClInclude Include="ref10\ge.h" />
+    <ClInclude Include="ref10\ge_add.h" />
+    <ClInclude Include="ref10\ge_madd.h" />
+    <ClInclude Include="ref10\ge_msub.h" />
+    <ClInclude Include="ref10\ge_p2_dbl.h" />
+    <ClInclude Include="ref10\ge_sub.h" />
+    <ClInclude Include="ref10\pow22523.h" />
+    <ClInclude Include="ref10\pow225521.h" />
+    <ClInclude Include="ref10\sc.h" />
+    <ClInclude Include="ref10\sha512.h" />
+    <ClInclude Include="ref10\sqrtm1.h" />
+    <ClInclude Include="selftests.h" />
+    <ClInclude Include="sha3\KeccakF-1600-interface.h" />
+    <ClInclude Include="sha3\KeccakNISTInterface.h" />
+    <ClInclude Include="sha3\KeccakSponge.h" />
+    <ClInclude Include="utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ref10\pow22523.q" />
+    <None Include="ref10\q2h.sh" />
+    <None Include="ref10\sqrtm1.py" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
