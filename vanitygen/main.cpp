@@ -113,8 +113,8 @@ bool verifyKeysLine(const std::string& line) {
 		return false;
 	}
 	
-	std::array<uint8_t, 32> privateKey;
-	std::array<uint8_t, 32> expectedPublicKey;
+	nem::Key privateKey;
+	nem::Key expectedPublicKey;
 	char address[42];
 	const std::string& expectedAddress = sm[4];
 
@@ -152,11 +152,13 @@ bool verifySigningLine(const std::string& line) {
 		return false;
 	}
 
-	std::array<uint8_t, 32> privateKey;
-	std::array<uint8_t, 32> expectedPublicKey;
-	std::array<uint8_t, 64> expectedSignature;
+	nem::Key privateKey;
+	nem::Key expectedPublicKey;
+	nem::Signature expectedSignature;
+	nem::Signature computedSignature;
+
+	// data will be have random size between 32-64
 	std::array<uint8_t, 64> dataBin;
-	std::array<uint8_t, 64> computedSignature;
 
 	inputStringToPrivateKey(sm[1], privateKey.data());
 	inputStringToData(sm[2], 64, expectedPublicKey.data());
@@ -171,11 +173,12 @@ bool verifySigningLine(const std::string& line) {
 	inputStringToData(dataString, length * 2, dataBin.data());
 
 	KeyPair keyPair{ privateKey };
-	DsaSigner::sign(keyPair, dataBin.data(), length, computedSignature);
+	bool isCanonical = DsaSigner::sign(keyPair, dataBin.data(), length, computedSignature);
 
-	if (memcmp(expectedPublicKey.data(), keyPair.getPublicKey().data(), keyPair.getPublicKey().size()) ||
+	if (!isCanonical ||
+		memcmp(expectedPublicKey.data(), keyPair.getPublicKey().data(), keyPair.getPublicKey().size()) ||
 		memcmp(expectedSignature.data(), computedSignature.data(), 64)) {
-		fmt::print("\nERROR\n");
+		fmt::print("\nERROR, result: %d\n", isCanonical);
 		fmt::print("input private key: {}\n", sm[1]);
 		fmt::print("      private key: {}\n", hexPrinter(keyPair.getPrivateKey(), true));
 
