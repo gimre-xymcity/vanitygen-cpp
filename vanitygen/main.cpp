@@ -78,9 +78,9 @@ void runGenerator(const std::string& needle) {
 		calculateAddress(keyPair.getPublicKey().data(), 32, address);
 		c++;
 
-		if (!(c % 1047)) {
+		if (!(c % 4095)) {
 			time_t end = time(0);
-			fprintf(stdout, "\r%10lld keys % 8.2f keys per sec", c, c / (double)(end - start)); fflush(stdout);
+			fprintf(stdout, "\r%10lld keys %lld % 8.2f keys per sec", c, end-start, c / (double)(end - start)); fflush(stdout);
 			printedStatusLine = true;
 		}
 
