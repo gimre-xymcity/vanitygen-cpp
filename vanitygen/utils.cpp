@@ -50,11 +50,13 @@ class Line : public std::string
 	}
 };
 
-void forLineInFile(std::istream& inputFile, std::function<void(const std::string&)> callback)
+void forLineInFile(std::istream& inputFile, std::function<bool(const std::string&)> callback)
 {	
 	typedef std::istream_iterator<Line> LineIt;
 
 	for (auto it = LineIt(inputFile), _it = LineIt(); it != _it; ++it) {
-		callback(*it);
+		if (!callback(*it)) {
+			break;
+		}
 	}
 }

@@ -132,7 +132,7 @@ void runTestsOnFile(const std::string& filename) {
 	uint64_t c = 0;
 	forLineInFile(inputFile, [&c](const std::string& line) {
 		if (!verifyLine(line)) {
-			return;
+			return false;
 		}
 
 		c++;
@@ -140,6 +140,7 @@ void runTestsOnFile(const std::string& filename) {
 		if (!(c % 513)) {
 			fmt::print("\r{:10d} tested keys", c);
 		}
+		return true;
 	});	
 
 	fmt::print("\n{:10d} TEST keys and addresses: OK!\n", c);
