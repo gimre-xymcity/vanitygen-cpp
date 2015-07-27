@@ -150,9 +150,10 @@
       <Filter>cppformat</Filter>
     </ClCompile>
     <ClCompile Include="selftests.cpp" />
-    <ClCompile Include="nemkey.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="nemaddress.cpp" />
+    <ClCompile Include="PcgRandom.cpp" />
+    <ClCompile Include="KeyGenerator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="sha3">
@@ -272,9 +273,11 @@
       <Filter>leanmean</Filter>
     </ClInclude>
     <ClInclude Include="selftests.h" />
-    <ClInclude Include="nemkey.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="nemaddress.h" />
+    <ClInclude Include="KeyPair.h" />
+    <ClInclude Include="KeyGenerator.h" />
+    <ClInclude Include="PcgRandom.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ref10\pow22523.q">

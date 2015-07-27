@@ -79,9 +79,10 @@
   <ItemGroup>
     <ClCompile Include="base32\base32.cpp" />
     <ClCompile Include="cppformat\format.cc" />
+    <ClCompile Include="KeyGenerator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="nemaddress.cpp" />
-    <ClCompile Include="nemkey.cpp" />
+    <ClCompile Include="PcgRandom.cpp" />
     <ClCompile Include="pcg\pcg_basic.c" />
     <ClCompile Include="ref10\fe_0.c" />
     <ClCompile Include="ref10\fe_1.c" />
@@ -135,9 +136,11 @@
   <ItemGroup>
     <ClInclude Include="base32\base32.h" />
     <ClInclude Include="cppformat\format.h" />
+    <ClInclude Include="KeyGenerator.h" />
+    <ClInclude Include="PcgRandom.h" />
+    <ClInclude Include="KeyPair.h" />
     <ClInclude Include="leanmean\optionparser.h" />
     <ClInclude Include="nemaddress.h" />
-    <ClInclude Include="nemkey.h" />
     <ClInclude Include="pcg\pcg_basic.h" />
     <ClInclude Include="ref10\api.h" />
     <ClInclude Include="ref10\base.h" />

@@ -1,11 +1,12 @@
 #include "selftests.h"
 #include "nemaddress.h"
-#include "nemkey.h"
 #include "utils.h"
+
+#include "KeyPair.h"
+#include "KeyGenerator.h"
 
 #include "cppformat/format.h"
 #include "leanmean/optionparser.h"
-#include "pcg/pcg_basic.h"
 
 #include <algorithm>
 #include <filesystem>
@@ -17,22 +18,21 @@
 #include <stdint.h>
 #include <string.h>
 #include <intrin.h>
-#include <time.h>
 
 // just to have fancy colors
 #include <Windows.h>
 
 #define info(strfmt, ...) do { fmt::print(" [.] "); fmt::print(strfmt, __VA_ARGS__); fmt::print("\n"); } while(0)
 
-class Key
+class KeyPrinter
 {
 public:
-	Key(uint8_t* key, bool reversed = false) :
+	KeyPrinter(const KeyGenerator::Key& key, bool reversed = false) :
 		m_key(key),
 		m_reversed(reversed)
 	{ }
 
-	friend std::ostream& operator<<(std::ostream &os, const Key &self) {
+	friend std::ostream& operator<<(std::ostream &os, const KeyPrinter &self) {
 		fmt::MemoryWriter out;
 		if (self.m_reversed) {
 			for (int i = 31; i >= 0; --i) {
@@ -47,23 +47,14 @@ public:
 		return os << out.c_str();
 	}
 private:
-	uint8_t* m_key;
+	const KeyGenerator::Key& m_key;
 	bool m_reversed;
 };
 
 void runGenerator(const std::string& needle) {
-	uint64_t seed[2];
-	pcg32_random_t _gen, *gen=&_gen;
-
+	KeyGenerator keyGenerator;
 	info("searching for: {}", needle);
 
-	seed[0] = time(0);
-	seed[1] = 0x696f3104;
-	pcg32_srandom_r(gen, seed[0], seed[1]);
-	for (int i = 0; i < 1000; ++i) pcg32_random_r(gen);
-
-	uint8_t privateKey[32];
-	uint8_t publicKey[32];
 	char address[42];
 	uint64_t c = 0;
 	time_t start = time(0);
@@ -74,9 +65,9 @@ void runGenerator(const std::string& needle) {
 	
 	while (true)
 	{
-		fill(gen, (uint32_t*)privateKey, 32 / 4);
-		crypto_sign_keypair(privateKey, publicKey);
-		calculateAddress(publicKey, 32, address);
+		KeyPair keyPair{ keyGenerator };
+		
+		calculateAddress(keyPair.getPublicKey().data(), 32, address);
 		c++;
 
 		if (!(c % 1047)) {
@@ -89,8 +80,8 @@ void runGenerator(const std::string& needle) {
 		if (pos!= nullptr) {
 			if (printedStatusLine) fmt::print("\n");
 			// NOTE: we need to print the private key reversed to be compatible with NIS/NCC
-			fmt::print("priv: {}", Key(privateKey, true));
-			fmt::print("\npub : {}", Key(publicKey));
+			fmt::print("priv: {}", KeyPrinter(keyPair.getPrivateKey(), true));
+			fmt::print("\npub : {}", KeyPrinter(keyPair.getPublicKey()));
 			printf("%.*s", pos-address, address);
 
 			SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_GREEN);
@@ -151,26 +142,25 @@ bool verifyLine(const std::string& line) {
 	std::smatch sm;
 	std::regex_match(line, sm, e);
 	
-	uint8_t privateKey[32];
-	uint8_t computedPublicKey[32];
-	uint8_t expectedPublicKey[32];
+	std::array<uint8_t, 32> privateKey;
+	std::array<uint8_t, 32> expectedPublicKey;
 	char address[42];
 	const std::string& expectedAddress = sm[4];
 
-	inputStringToPrivateKey(sm[1], privateKey);
-	inputStringToPublicKey(sm[3], expectedPublicKey);
+	inputStringToPrivateKey(sm[1], privateKey.data());
+	inputStringToPublicKey(sm[3], expectedPublicKey.data());
 	
-	crypto_sign_keypair(privateKey, computedPublicKey);
-	calculateAddress(computedPublicKey, 32, address);
+	KeyPair keyPair{ privateKey };
+	calculateAddress(keyPair.getPublicKey().data(), 32, address);
 	
-	if (memcmp(expectedPublicKey, computedPublicKey, sizeof(computedPublicKey)) ||
+	if (memcmp(expectedPublicKey.data(), keyPair.getPublicKey().data(), keyPair.getPublicKey().size()) ||
 		expectedAddress != address) {
 		fmt::print("\nERROR\n");
 		fmt::print("input private key: {}\n", sm[1]);
-		fmt::print("      private key: {}\n", Key(privateKey));
+		fmt::print("      private key: {}\n", KeyPrinter(keyPair.getPrivateKey()));
 
-		fmt::print("expected public key: {}\n", Key(expectedPublicKey));
-		fmt::print("  actual public key: {}\n", Key(computedPublicKey));
+		fmt::print("expected public key: {}\n", KeyPrinter(expectedPublicKey));
+		fmt::print("  actual public key: {}\n", KeyPrinter(keyPair.getPublicKey()));
 
 		fmt::print("expected address: {}\n", expectedAddress);
 		fmt::print("  actual address: {}\n", address);
