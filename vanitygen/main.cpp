@@ -2,6 +2,7 @@
 #include "nemaddress.h"
 #include "utils.h"
 
+#include "DsaSigner.h"
 #include "KeyPair.h"
 #include "KeyGenerator.h"
 
@@ -24,22 +25,23 @@
 
 #define info(strfmt, ...) do { fmt::print(" [.] "); fmt::print(strfmt, __VA_ARGS__); fmt::print("\n"); } while(0)
 
-class KeyPrinter
+template <class ArrayType>
+class HexPrinter
 {
 public:
-	KeyPrinter(const nem::Key& key, bool reversed = false) :
+	HexPrinter(const ArrayType& key, bool reversed = false) :
 		m_key(key),
 		m_reversed(reversed)
 	{ }
 
-	friend std::ostream& operator<<(std::ostream &os, const KeyPrinter &self) {
+	friend std::ostream& operator<<(std::ostream &os, const HexPrinter &self) {
 		fmt::MemoryWriter out;
 		if (self.m_reversed) {
-			for (int i = 31; i >= 0; --i) {
+			for (int i = ArrayType::_EEN_SIZE - 1; i >= 0; --i) {
 				out.write("{:02x}", self.m_key[i]);
 			}
 		} else {
-			for (size_t i = 0; i < 32; ++i) {
+			for (size_t i = 0; i < ArrayType::_EEN_SIZE; ++i) {
 				out.write("{:02x}", self.m_key[i]);
 			}
 		}
@@ -47,9 +49,15 @@ public:
 		return os << out.c_str();
 	}
 private:
-	const nem::Key& m_key;
+	const ArrayType& m_key;
 	bool m_reversed;
 };
+
+template <class ArrayType>
+HexPrinter<ArrayType> hexPrinter(const ArrayType& arrayType, bool reversed = false)
+{
+	return HexPrinter<ArrayType>(arrayType, reversed);
+}
 
 void runGenerator(const std::string& needle) {
 	KeyGenerator keyGenerator;
@@ -80,8 +88,8 @@ void runGenerator(const std::string& needle) {
 		if (pos!= nullptr) {
 			if (printedStatusLine) fmt::print("\n");
 			// NOTE: we need to print the private key reversed to be compatible with NIS/NCC
-			fmt::print("priv: {}", KeyPrinter(keyPair.getPrivateKey(), true));
-			fmt::print("\npub : {}", KeyPrinter(keyPair.getPublicKey()));
+			fmt::print("priv: {}", hexPrinter(keyPair.getPrivateKey(), true));
+			fmt::print("\npub : {}", hexPrinter(keyPair.getPublicKey()));
 			printf("%.*s", pos-address, address);
 
 			SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_GREEN);
@@ -120,10 +128,10 @@ bool verifyKeysLine(const std::string& line) {
 		expectedAddress != address) {
 		fmt::print("\nERROR\n");
 		fmt::print("input private key: {}\n", sm[1]);
-		fmt::print("      private key: {}\n", KeyPrinter(keyPair.getPrivateKey(), true));
+		fmt::print("      private key: {}\n", hexPrinter(keyPair.getPrivateKey(), true));
 
-		fmt::print("expected public key: {}\n", KeyPrinter(expectedPublicKey));
-		fmt::print("  actual public key: {}\n", KeyPrinter(keyPair.getPublicKey()));
+		fmt::print("expected public key: {}\n", hexPrinter(expectedPublicKey));
+		fmt::print("  actual public key: {}\n", hexPrinter(keyPair.getPublicKey()));
 
 		fmt::print("expected address: {}\n", expectedAddress);
 		fmt::print("  actual address: {}\n", address);
@@ -163,15 +171,19 @@ bool verifySigningLine(const std::string& line) {
 	inputStringToData(dataString, length * 2, dataBin.data());
 
 	KeyPair keyPair{ privateKey };
-	keyPair.sign(dataBin.data(), length, computedSignature);
+	DsaSigner::sign(keyPair, dataBin.data(), length, computedSignature);
 
-	if (memcmp(expectedPublicKey.data(), keyPair.getPublicKey().data(), keyPair.getPublicKey().size())) {
+	if (memcmp(expectedPublicKey.data(), keyPair.getPublicKey().data(), keyPair.getPublicKey().size()) ||
+		memcmp(expectedSignature.data(), computedSignature.data(), 64)) {
 		fmt::print("\nERROR\n");
 		fmt::print("input private key: {}\n", sm[1]);
-		fmt::print("      private key: {}\n", KeyPrinter(keyPair.getPrivateKey(), true));
+		fmt::print("      private key: {}\n", hexPrinter(keyPair.getPrivateKey(), true));
 
-		fmt::print("expected public key: {}\n", KeyPrinter(expectedPublicKey));
-		fmt::print("  actual public key: {}\n", KeyPrinter(keyPair.getPublicKey()));
+		fmt::print("expected public key: {}\n", hexPrinter(expectedPublicKey));
+		fmt::print("  actual public key: {}\n", hexPrinter(keyPair.getPublicKey()));
+
+		fmt::print("expected signature: {}\n", hexPrinter(expectedSignature));
+		fmt::print("  actual signature: {}\n", hexPrinter(computedSignature));
 
 		return false;
 	}

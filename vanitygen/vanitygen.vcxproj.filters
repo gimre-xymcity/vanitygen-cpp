@@ -154,6 +154,7 @@
     <ClCompile Include="nemaddress.cpp" />
     <ClCompile Include="PcgRandom.cpp" />
     <ClCompile Include="KeyGenerator.cpp" />
+    <ClCompile Include="DsaSigner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="sha3">

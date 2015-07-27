@@ -79,6 +79,7 @@
   <ItemGroup>
     <ClCompile Include="base32\base32.cpp" />
     <ClCompile Include="cppformat\format.cc" />
+    <ClCompile Include="DsaSigner.cpp" />
     <ClCompile Include="KeyGenerator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="nemaddress.cpp" />
