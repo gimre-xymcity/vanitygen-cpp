@@ -94,49 +94,6 @@ void runGenerator(const std::string& needle) {
 	}
 }
 
-namespace detail
-{
-	class Line : public std::string
-	{
-		friend std::istream & operator>>(std::istream& is, Line& line)
-		{
-			return std::getline(is, line);
-		}
-	};
-}
-
-uint8_t strToVal(const char c) {
-	if (c >= 'A' && c <= 'F') return c - 'A' + 10;
-	if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-	if (c >= '0' && c <= '9') return c - '0';
-	return 0;
-}
-
-uint8_t strToByte(const char* twoBytes) {
-	return (strToVal(twoBytes[0]) << 4) | strToVal(twoBytes[1]);
-}
-
-// NOTE: this reverses the format of private key...
-void inputStringToPrivateKey(const std::string& privString, uint8_t* privateKey) {
-	if (privString.size() != 64) {
-		throw std::runtime_error("private key in first column in input file must have 64 characters");
-	}
-
-	for (size_t i = 0; i < privString.size(); i += 2) {
-		privateKey[31 - i / 2] = strToByte(&privString[i]);
-	}
-}
-
-void inputStringToPublicKey(const std::string& pubString, uint8_t* publicKey) {
-	if (pubString.size() != 64) {
-		throw std::runtime_error("public key in third column in input file must have 64 characters");
-	}
-
-	for (size_t i = 0; i < pubString.size(); i += 2) {
-		publicKey[i / 2] = strToByte(&pubString[i]);
-	}
-}
-
 bool verifyLine(const std::string& line) {
 	std::regex e("^: ([a-f0-9]+) : ([a-f0-9]+) : ([a-f0-9]+) : ([A-Z2-7]+)$");
 	std::smatch sm;
@@ -157,7 +114,7 @@ bool verifyLine(const std::string& line) {
 		expectedAddress != address) {
 		fmt::print("\nERROR\n");
 		fmt::print("input private key: {}\n", sm[1]);
-		fmt::print("      private key: {}\n", KeyPrinter(keyPair.getPrivateKey()));
+		fmt::print("      private key: {}\n", KeyPrinter(keyPair.getPrivateKey(), true));
 
 		fmt::print("expected public key: {}\n", KeyPrinter(expectedPublicKey));
 		fmt::print("  actual public key: {}\n", KeyPrinter(keyPair.getPublicKey()));
@@ -169,13 +126,12 @@ bool verifyLine(const std::string& line) {
 	return true;
 }
 
-void runTestsOnFile(const std::string& filename) {
-	typedef std::istream_iterator<detail::Line> LineIt;
+void runTestsOnFile(const std::string& filename) {	
 	std::ifstream inputFile(filename);
 
 	uint64_t c = 0;
-	for (auto it = LineIt(inputFile), _it = LineIt(); it != _it; ++it) {
-		if (!verifyLine(*it)) {
+	forLineInFile(inputFile, [&c](const std::string& line) {
+		if (!verifyLine(line)) {
 			return;
 		}
 
@@ -184,7 +140,7 @@ void runTestsOnFile(const std::string& filename) {
 		if (!(c % 513)) {
 			fmt::print("\r{:10d} tested keys", c);
 		}
-	}
+	});	
 
 	fmt::print("\n{:10d} TEST keys and addresses: OK!\n", c);
 }

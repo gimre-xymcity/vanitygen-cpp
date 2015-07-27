@@ -1,9 +1,60 @@
 #include "utils.h"
 
+#include <string>
+
 void randombytes(unsigned char* _data, size_t dataSize)
 {
 	uint32_t* data = (uint32_t*)_data;
 	dataSize /= 4;
 	for (size_t i = 0; i < dataSize; ++i)
 		data[i] = pcg32_random();
+}
+
+uint8_t strToVal(const char c) {
+	if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+	if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+	if (c >= '0' && c <= '9') return c - '0';
+	return 0;
+}
+
+uint8_t strToByte(const char* twoBytes) {
+	return (strToVal(twoBytes[0]) << 4) | strToVal(twoBytes[1]);
+}
+
+// NOTE: this reverses the format of private key...
+void inputStringToPrivateKey(const std::string& privString, uint8_t* privateKey) {
+	if (privString.size() != 64) {
+		throw std::runtime_error("private key in first column in input file must have 64 characters");
+	}
+
+	for (size_t i = 0; i < privString.size(); i += 2) {
+		privateKey[31 - i / 2] = strToByte(&privString[i]);
+	}
+}
+
+void inputStringToPublicKey(const std::string& pubString, uint8_t* publicKey) {
+	if (pubString.size() != 64) {
+		throw std::runtime_error("public key in third column in input file must have 64 characters");
+	}
+
+	for (size_t i = 0; i < pubString.size(); i += 2) {
+		publicKey[i / 2] = strToByte(&pubString[i]);
+	}
+}
+
+class Line : public std::string
+{
+	friend std::istream& operator>>(std::istream& is, Line& line)
+	{
+		return std::getline(is, line);
+	}
+};
+
+void forLineInFile(std::istream& inputFile, std::function<void(const std::string&)> callback)
+{	
+	typedef std::istream_iterator<Line> LineIt;
+
+	for (auto it = LineIt(inputFile), _it = LineIt(); it != _it; ++it) {
+		callback(*it);
+	}
 }
