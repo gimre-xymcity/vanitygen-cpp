@@ -88,9 +88,9 @@ void runGenerator(const std::string& needle) {
 		if (pos!= nullptr) {
 			if (printedStatusLine) fmt::print("\n");
 			// NOTE: we need to print the private key reversed to be compatible with NIS/NCC
-			fmt::print("priv: {}", hexPrinter(keyPair.getPrivateKey(), true));
-			fmt::print("\npub : {}", hexPrinter(keyPair.getPublicKey()));
-			printf("%.*s", pos-address, address);
+			fmt::print("priv: {}\n", hexPrinter(keyPair.getPrivateKey(), true));
+			fmt::print("pub : {}\n", hexPrinter(keyPair.getPublicKey()));
+			printf("addr: %.*s", pos-address, address);
 
 			SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_GREEN);
 			printf("%.*s", needle.size(), pos);
