@@ -1,15 +1,14 @@
 #pragma once
 
+#include "nemTypes.h"
 #include "PcgRandom.h"
 #include <array>
 
 class KeyGenerator
 {
 public:
-	typedef std::array<uint8_t, 32> Key;
-
-	void generate(Key& privateKey, Key& publicKey);	
-	static int derivePublicKey(const Key& priv, Key& pub);
+	void generate(nem::Key& privateKey, nem::Key& publicKey);	
+	static int derivePublicKey(const nem::Key& priv, nem::Key& pub);
 
 private:
 	PcgRandom m_pcgRandom;

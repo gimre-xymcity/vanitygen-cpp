@@ -136,7 +136,9 @@
   <ItemGroup>
     <ClInclude Include="base32\base32.h" />
     <ClInclude Include="cppformat\format.h" />
+    <ClInclude Include="DsaSigner.h" />
     <ClInclude Include="KeyGenerator.h" />
+    <ClInclude Include="nemTypes.h" />
     <ClInclude Include="PcgRandom.h" />
     <ClInclude Include="KeyPair.h" />
     <ClInclude Include="leanmean\optionparser.h" />

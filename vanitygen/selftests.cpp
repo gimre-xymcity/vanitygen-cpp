@@ -88,7 +88,7 @@ static bool keypairSelfTest()
 	// reversed
 	unsigned char data[] = "\xf1\x8e\xfd\x04\x2a\xf9\x3b\x0e\xe1\x24\xa2\x0b\x73\x95\x71\xb0\xed\x66\xe7\x6a\xe3\xa1\x11\xf0\x02\x97\xdb\x30\x5e\xba\xe7\xb2";
 
-	KeyPair::Key privateKey;
+	nem::Key privateKey;
 	std::copy(data, data + 32, privateKey.begin());
 	KeyPair keyPair{ privateKey };
 

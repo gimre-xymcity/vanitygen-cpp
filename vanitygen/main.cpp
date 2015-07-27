@@ -27,7 +27,7 @@
 class KeyPrinter
 {
 public:
-	KeyPrinter(const KeyGenerator::Key& key, bool reversed = false) :
+	KeyPrinter(const nem::Key& key, bool reversed = false) :
 		m_key(key),
 		m_reversed(reversed)
 	{ }
@@ -47,7 +47,7 @@ public:
 		return os << out.c_str();
 	}
 private:
-	const KeyGenerator::Key& m_key;
+	const nem::Key& m_key;
 	bool m_reversed;
 };
 
@@ -94,10 +94,16 @@ void runGenerator(const std::string& needle) {
 	}
 }
 
-bool verifyLine(const std::string& line) {
+bool verifyKeysLine(const std::string& line) {
+	// : private : private nis format : public : address
 	std::regex e("^: ([a-f0-9]+) : ([a-f0-9]+) : ([a-f0-9]+) : ([A-Z2-7]+)$");
 	std::smatch sm;
-	std::regex_match(line, sm, e);
+	bool result = std::regex_match(line, sm, e);
+	if (!result)
+	{
+		fmt::print("couldn't match following line\n{}", line);
+		return false;
+	}
 	
 	std::array<uint8_t, 32> privateKey;
 	std::array<uint8_t, 32> expectedPublicKey;
@@ -105,7 +111,7 @@ bool verifyLine(const std::string& line) {
 	const std::string& expectedAddress = sm[4];
 
 	inputStringToPrivateKey(sm[1], privateKey.data());
-	inputStringToPublicKey(sm[3], expectedPublicKey.data());
+	inputStringToData(sm[3], 64, expectedPublicKey.data());
 	
 	KeyPair keyPair{ privateKey };
 	calculateAddress(keyPair.getPublicKey().data(), 32, address);
@@ -126,12 +132,58 @@ bool verifyLine(const std::string& line) {
 	return true;
 }
 
-void runTestsOnFile(const std::string& filename) {	
+
+bool verifySigningLine(const std::string& line) {
+	// : private : public : signature : length : data
+	std::regex e("^ *: ([a-f0-9]+) : ([a-f0-9]+) : ([a-f0-9]+) : ([0-9]{2}) : ([a-f0-9]+)$");
+	std::smatch sm;
+	bool result = std::regex_match(line, sm, e);
+	if (!result)
+	{
+		fmt::print("couldn't match following line\n{}", line);
+		return false;
+	}
+
+	std::array<uint8_t, 32> privateKey;
+	std::array<uint8_t, 32> expectedPublicKey;
+	std::array<uint8_t, 64> expectedSignature;
+	std::array<uint8_t, 64> dataBin;
+	std::array<uint8_t, 64> computedSignature;
+
+	inputStringToPrivateKey(sm[1], privateKey.data());
+	inputStringToData(sm[2], 64, expectedPublicKey.data());
+	inputStringToData(sm[3], 128, expectedSignature.data());
+
+	size_t length = std::stoi(sm[4]);
+	std::string dataString = sm[5];
+	if (dataString.size() != length * 2) {
+		fmt::print("invalid data size given: {} in line:\n{}", length, line);
+		return false;
+	}
+	inputStringToData(dataString, length * 2, dataBin.data());
+
+	KeyPair keyPair{ privateKey };
+	keyPair.sign(dataBin.data(), length, computedSignature);
+
+	if (memcmp(expectedPublicKey.data(), keyPair.getPublicKey().data(), keyPair.getPublicKey().size())) {
+		fmt::print("\nERROR\n");
+		fmt::print("input private key: {}\n", sm[1]);
+		fmt::print("      private key: {}\n", KeyPrinter(keyPair.getPrivateKey(), true));
+
+		fmt::print("expected public key: {}\n", KeyPrinter(expectedPublicKey));
+		fmt::print("  actual public key: {}\n", KeyPrinter(keyPair.getPublicKey()));
+
+		return false;
+	}
+	return true;
+}
+
+void runTestKeysOnFile(const std::string& filename) {	
 	std::ifstream inputFile(filename);
 
 	uint64_t c = 0;
 	forLineInFile(inputFile, [&c](const std::string& line) {
-		if (!verifyLine(line)) {
+		if (!verifyKeysLine(line)) {
 			return false;
 		}
 
@@ -142,6 +194,26 @@ void runTestsOnFile(const std::string& filename) {
 		}
 		return true;
 	});	
+
+	fmt::print("\n{:10d} TEST keys and addresses: OK!\n", c);
+}
+
+void runTestSigningOnFile(const std::string& filename) {
+	std::ifstream inputFile(filename);
+
+	uint64_t c = 0;
+	forLineInFile(inputFile, [&c](const std::string& line) {
+		if (!verifySigningLine(line)) {
+			return false;
+		}
+
+		c++;
+
+		if (!(c % 513)) {
+			fmt::print("\r{:10d} tested keys", c);
+		}
+		return true;
+	});
 
 	fmt::print("\n{:10d} TEST keys and addresses: OK!\n", c);
 }
@@ -169,17 +241,19 @@ static option::ArgStatus argIsFile(const option::Option& opt, bool msg)
 	return option::ArgStatus::ARG_OK;
 }
 
-enum  optionIndex { Unknown_Flag, Usage, Test_File, Skip_Self_Test };
+enum  optionIndex { Unknown_Flag, Usage, Test_Keys_File, Test_Sign_File, Skip_Self_Test };
 const option::Descriptor usage[] =
 {
 	{ Unknown_Flag, 0, "", "", option::Arg::None, "USAGE: example [options]\n\nOptions:" },
 	{ Usage, 0, "", "help", option::Arg::None, "  --help  \tPrint usage and exit." },
-	{ Test_File, 0, "", "test-file", argIsFile, "  --test-file <file> \tConducts test on an intput file. " },
+	{ Test_Keys_File, 0, "", "test-keys-file", argIsFile, "  --test-keys-file <file> \tConducts keys test on an input file. " },
+	{ Test_Sign_File, 0, "", "test-sign-file", argIsFile, "  --test-sign-file <file> \tConducts signing test on an input file. " },
 	{ Skip_Self_Test, 0, "", "skip-self-test", option::Arg::None, "  --skip-self-test  \tSkip self test." },
 	{ Unknown_Flag, 0, "", "", option::Arg::None, R"(
 EXAMPLES:
   vanitygen.exe foo
-  vanitygen.exe --test-file testkeys.dat
+  vanitygen.exe --test-keys-file testkeys.dat
+  vanitygen.exe --test-sign-file testsign.dat
   vanitygen.exe --skip-self-test bar
 )" },
 	{ 0, 0, 0, 0, 0, 0 }
@@ -215,8 +289,13 @@ int main(int argc, char** argv) {
 		return -3;
 	}
 
-	if (options[Test_File]) {
-		runTestsOnFile(options[Test_File].arg);
+	if (options[Test_Keys_File]) {
+		runTestKeysOnFile(options[Test_Keys_File].arg);
+		return 0;
+	}
+
+	if (options[Test_Sign_File]) {
+		runTestSigningOnFile(options[Test_Sign_File].arg);
 		return 0;
 	}
 

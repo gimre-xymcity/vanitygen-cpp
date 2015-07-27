@@ -24,7 +24,7 @@ uint8_t strToByte(const char* twoBytes) {
 // NOTE: this reverses the format of private key...
 void inputStringToPrivateKey(const std::string& privString, uint8_t* privateKey) {
 	if (privString.size() != 64) {
-		throw std::runtime_error("private key in first column in input file must have 64 characters");
+		throw std::runtime_error("private key in input file must have 64 characters");
 	}
 
 	for (size_t i = 0; i < privString.size(); i += 2) {
@@ -32,13 +32,13 @@ void inputStringToPrivateKey(const std::string& privString, uint8_t* privateKey)
 	}
 }
 
-void inputStringToPublicKey(const std::string& pubString, uint8_t* publicKey) {
-	if (pubString.size() != 64) {
-		throw std::runtime_error("public key in third column in input file must have 64 characters");
+void inputStringToData(const std::string& dataString, size_t requiredSize, uint8_t* dataOutput) {
+	if (dataString.size() != requiredSize) {
+		throw std::runtime_error("field in input file must have "+std::to_string(requiredSize) + " characters");
 	}
 
-	for (size_t i = 0; i < pubString.size(); i += 2) {
-		publicKey[i / 2] = strToByte(&pubString[i]);
+	for (size_t i = 0; i < dataString.size(); i += 2) {
+		dataOutput[i / 2] = strToByte(&dataString[i]);
 	}
 }
 

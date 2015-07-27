@@ -1,6 +1,7 @@
 #pragma once
 
 #include "KeyGenerator.h"
+#include "DsaSigner.h"
 
 #include <algorithm>
 #include <array>
@@ -8,28 +9,31 @@
 class KeyPair
 {
 public:
-	typedef KeyGenerator::Key Key;
-
 	KeyPair(KeyGenerator& keyGenerator)
 	{
 		keyGenerator.generate(m_privateKey, m_publicKey);
 	}
 
-	KeyPair(const Key& privateKey)
+	KeyPair(const nem::Key& privateKey)
 	{
 		m_privateKey = privateKey;
 		KeyGenerator::derivePublicKey(m_privateKey, m_publicKey);
 	}
 
-	const Key& getPublicKey() const {
+	void sign(const uint8_t* data, size_t dataSize, nem::Signature& signature)
+	{
+		DsaSigner::sign(m_privateKey, data, dataSize, signature);
+	}
+
+	const nem::Key& getPublicKey() const {
 		return m_publicKey;
 	}
 
-	const Key& getPrivateKey() const {
+	const nem::Key& getPrivateKey() const {
 		return m_privateKey;
 	}
 
 private:
-	Key m_privateKey;
-	Key m_publicKey;
+	nem::Key m_privateKey;
+	nem::Key m_publicKey;
 };

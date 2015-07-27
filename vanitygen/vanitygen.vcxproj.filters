@@ -278,6 +278,8 @@
     <ClInclude Include="KeyPair.h" />
     <ClInclude Include="KeyGenerator.h" />
     <ClInclude Include="PcgRandom.h" />
+    <ClInclude Include="DsaSigner.h" />
+    <ClInclude Include="nemTypes.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ref10\pow22523.q">
