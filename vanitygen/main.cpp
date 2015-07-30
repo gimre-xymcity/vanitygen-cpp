@@ -8,6 +8,7 @@
 
 #include "cppformat/format.h"
 #include "leanmean/optionparser.h"
+#include "sha3/KeccakNISTInterface.h"
 
 #include <algorithm>
 #include <filesystem>
@@ -102,6 +103,46 @@ void runGenerator(const std::string& needle) {
 	}
 }
 
+bool verifySha3_256_Line(const std::string& line) {
+	// : SHA-3 : length in bytes, decimal (64-511) : data
+	std::regex e("^: ([a-f0-9]+) : ([0-9]{2,3}) : ([a-f0-9]+)$");
+	std::smatch sm;
+	bool result = std::regex_match(line, sm, e);
+	if (!result)
+	{
+		fmt::print("couldn't match following line\n{}", line);
+		return false;
+	}
+
+	std::array<uint8_t, 32> computedHash;
+	std::array<uint8_t, 32> expectedHash;
+	// data will be have random size between 32-64
+	std::array<uint8_t, 512> dataBin;
+
+	inputStringToData(sm[1], 64, expectedHash.data());
+	size_t length = std::stoi(sm[2]);
+
+	std::string dataString = sm[3];
+	if (dataString.size() != length * 2) {
+		fmt::print("invalid data size given: {} in line:\n{}", length, line);
+		return false;
+	}
+	inputStringToData(dataString, length * 2, dataBin.data());
+
+	hashState hctx;
+	Init(&hctx, 256);
+	Update(&hctx, dataBin.data(), length * 8);
+	Final(&hctx, computedHash.data());
+
+	if (memcmp(expectedHash.data(), computedHash.data(), 32)) {
+		fmt::print("\nERROR\n");
+		fmt::print("expected hash: {}\n", hexPrinter(expectedHash));
+		fmt::print("  actual hash: {}\n", hexPrinter(computedHash));
+		return false;
+	}
+	return true;
+}
+
 bool verifyKeysLine(const std::string& line) {
 	// : private : private nis format : public : address
 	std::regex e("^: ([a-f0-9]+) : ([a-f0-9]+) : ([a-f0-9]+) : ([A-Z2-7]+)$");
@@ -139,7 +180,6 @@ bool verifyKeysLine(const std::string& line) {
 	}
 	return true;
 }
-
 
 bool verifySigningLine(const std::string& line) {
 	// : private : public : signature : length : data
@@ -193,11 +233,41 @@ bool verifySigningLine(const std::string& line) {
 	return true;
 }
 
+void runTestSha3OnFile(const std::string& filename) {
+	std::ifstream inputFile(filename);
+
+	uint64_t c = 0;
+	forLineInFile(inputFile, [&c](const std::string& line) {
+		// skip comments
+		if (line.size() > 0 && line[0] == '#') {
+			return true;
+		}
+
+		if (!verifySha3_256_Line(line)) {
+			return false;
+		}
+
+		c++;
+
+		if (!(c % 513)) {
+			fmt::print("\r{:10d} tested hashes", c);
+		}
+		return true;
+	});
+
+	fmt::print("\n{:10d} TEST sha-3: OK!\n", c);
+}
+
 void runTestKeysOnFile(const std::string& filename) {	
 	std::ifstream inputFile(filename);
 
 	uint64_t c = 0;
 	forLineInFile(inputFile, [&c](const std::string& line) {
+		// skip comments
+		if (line.size() > 0 && line[0] == '#') {
+			return true;
+		}
+
 		if (!verifyKeysLine(line)) {
 			return false;
 		}
@@ -218,6 +288,11 @@ void runTestSigningOnFile(const std::string& filename) {
 
 	uint64_t c = 0;
 	forLineInFile(inputFile, [&c](const std::string& line) {
+		// skip comments
+		if (line.size() > 0 && line[0] == '#') {
+			return true;
+		}
+
 		if (!verifySigningLine(line)) {
 			return false;
 		}
@@ -256,11 +331,12 @@ static option::ArgStatus argIsFile(const option::Option& opt, bool msg)
 	return option::ArgStatus::ARG_OK;
 }
 
-enum  optionIndex { Unknown_Flag, Usage, Test_Keys_File, Test_Sign_File, Skip_Self_Test };
+enum  optionIndex { Unknown_Flag, Usage, Test_Sha3_File, Test_Keys_File, Test_Sign_File, Skip_Self_Test };
 const option::Descriptor usage[] =
 {
 	{ Unknown_Flag, 0, "", "", option::Arg::None, "USAGE: example [options]\n\nOptions:" },
 	{ Usage, 0, "", "help", option::Arg::None, "  --help  \tPrint usage and exit." },
+	{ Test_Sha3_File, 0, "", "test-sha3-file", argIsFile, "  --test-sha3-file <file> \tConducts sha3 test on an input file. " },
 	{ Test_Keys_File, 0, "", "test-keys-file", argIsFile, "  --test-keys-file <file> \tConducts keys test on an input file. " },
 	{ Test_Sign_File, 0, "", "test-sign-file", argIsFile, "  --test-sign-file <file> \tConducts signing test on an input file. " },
 	{ Skip_Self_Test, 0, "", "skip-self-test", option::Arg::None, "  --skip-self-test  \tSkip self test." },
@@ -302,6 +378,11 @@ int main(int argc, char** argv) {
 	if (options[Skip_Self_Test]) {
 	} else if (!selfTest()) {
 		return -3;
+	}
+
+	if (options[Test_Sha3_File]) {
+		runTestSha3OnFile(options[Test_Sha3_File].arg);
+		return 0;
 	}
 
 	if (options[Test_Keys_File]) {
