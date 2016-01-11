@@ -7,6 +7,41 @@
 #define erro(strfmt, ...) do { fmt::print(" [!] "); fmt::print(strfmt, __VA_ARGS__); fmt::print("\n"); } while(0)
 #define succ(strfmt, ...) do { fmt::print(" [+] "); fmt::print(strfmt, __VA_ARGS__); fmt::print("\n"); } while(0)
 
+template <class ArrayType>
+class HexPrinter
+{
+public:
+	HexPrinter(const ArrayType& key, bool reversed = false) :
+		m_key(key),
+		m_reversed(reversed)
+	{ }
+
+	friend std::ostream& operator<<(std::ostream &os, const HexPrinter &self) {
+		fmt::MemoryWriter out;
+		if (self.m_reversed) {
+			for (int i = 64 - 1; i >= 0; --i) {
+				out.write("{:02x}", self.m_key[i]);
+			}
+		}
+		else {
+			for (size_t i = 0; i < 64; ++i) {
+				out.write("{:02x}", self.m_key[i]);
+			}
+		}
+
+		return os << out.c_str();
+	}
+private:
+	const ArrayType& m_key;
+	bool m_reversed;
+};
+
+template <class ArrayType>
+HexPrinter<ArrayType> hexPrinter(const ArrayType& arrayType, bool reversed = false)
+{
+	return HexPrinter<ArrayType>(arrayType, reversed);
+}
+
 static bool sha3selfTest()
 {
 	const unsigned char data[] = "\xc5\x24\x77\x38\xc3\xa5\x10\xfb\x6c\x11\x41\x33\x31\xd8\xa4\x77\x64\xf6\xe7\x8f\xfc\xdb\x02\xb6\x87\x8d\x5d\xd3\xb7\x7f\x38\xed";
@@ -20,6 +55,22 @@ static bool sha3selfTest()
 	Final(hctx, result);
 
 	if (memcmp(result, expected, 32)) {
+		fmt::print("\n");
+		{
+			fmt::MemoryWriter out;
+			for (size_t i = 0; i < sizeof(result); ++i) {
+				out.write("{:02x}", result[i]);
+			}
+			fmt::print("{}\n", out.c_str());
+		}
+		{
+			fmt::MemoryWriter out;
+			for (size_t i = 0; i < sizeof(expected); ++i) {
+				out.write("{:02x}", expected[i]);
+			}
+			fmt::print("{}\n", out.c_str());
+		}
+
 		erro("SELF TEST (sha3): failed");
 		return false;
 	}
@@ -45,6 +96,8 @@ static bool sha3512selfTest()
 		return false;
 	}
 	succ("SELF TEST (sha3-512): OK");
+
+	fmt::print("sha3512 : {}\n", hexPrinter(result));
 	return true;
 }
 
