@@ -3,7 +3,7 @@
 #include "ref10/ge.h"
 #include "ref10/sha512.h"
 #include "ref10/sc.h"
-#include "sha3/KeccakNISTInterface.h"
+#include "sha3/KeccakHash.h"
 
 #ifdef _MSC_VER
 #define RESTRICT __restrict
@@ -13,7 +13,7 @@
 
 bool DsaSigner::sign(const KeyPair& keyPair, const uint8_t* data, size_t dataSize, nem::Signature& signature)
 {
-	hashState hctx;
+	Keccak_HashInstance hctx;
 	uint8_t privHash[64];
 	uint8_t r[64];
 	uint8_t h[64];
@@ -27,11 +27,10 @@ bool DsaSigner::sign(const KeyPair& keyPair, const uint8_t* data, size_t dataSiz
 	privHash[31] &= 0x7f;
 	privHash[31] |= 0x40;
 
-	
-	Init(&hctx, 512);
-	Update(&hctx, privHash + 32, 32 * 8);
-	Update(&hctx, data, dataSize * 8);
-	Final(&hctx, r);
+	Keccak_HashInitialize_SHA3_512(&hctx);
+	Keccak_HashUpdate(&hctx, privHash + 32, 32 * 8);
+	Keccak_HashUpdate(&hctx, data, dataSize * 8);
+	Keccak_HashSqueeze(&hctx, r, 512);
 
 	ge_p3 rMulBase;
 	sc_reduce(r);
@@ -40,11 +39,11 @@ bool DsaSigner::sign(const KeyPair& keyPair, const uint8_t* data, size_t dataSiz
 
 	// encodedR || public || data
 
-	Init(&hctx, 512);
-	Update(&hctx, encodedR, 32 * 8);
-	Update(&hctx, keyPair.getPublicKey().data(), 32 * 8);
-	Update(&hctx, data, dataSize * 8);
-	Final(&hctx, h);
+	Keccak_HashInitialize_SHA3_512(&hctx);
+	Keccak_HashUpdate(&hctx, encodedR, 32 * 8);
+	Keccak_HashUpdate(&hctx, keyPair.getPublicKey().data(), 32 * 8);
+	Keccak_HashUpdate(&hctx, data, dataSize * 8);
+	Keccak_HashSqueeze(&hctx, h, 512);
 
 	sc_reduce(h);
 	sc_muladd(encodedS, h, privHash, r);

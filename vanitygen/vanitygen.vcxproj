@@ -134,8 +134,8 @@
     <ClCompile Include="ref10\verify.c" />
     <ClCompile Include="ripemd160\ripemd160.cpp" />
     <ClCompile Include="selftests.cpp" />
-    <ClCompile Include="sha3\keccak.cpp" />
-    <ClCompile Include="sha3\KeccakNISTInterface.cpp" />
+    <ClCompile Include="sha3\KeccakF-1600-opt64.cpp" />
+    <ClCompile Include="sha3\KeccakHash.cpp" />
     <ClCompile Include="sha3\KeccakSponge.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
@@ -175,15 +175,21 @@
     <ClInclude Include="ref10\sha512.h" />
     <ClInclude Include="ref10\sqrtm1.h" />
     <ClInclude Include="selftests.h" />
+    <ClInclude Include="sha3\brg_endian.h" />
     <ClInclude Include="sha3\KeccakF-1600-interface.h" />
-    <ClInclude Include="sha3\KeccakNISTInterface.h" />
+    <ClInclude Include="sha3\KeccakF-1600-opt64-settings.h" />
+    <ClInclude Include="sha3\KeccakHash.h" />
     <ClInclude Include="sha3\KeccakSponge.h" />
+    <ClInclude Include="sha3\SnP-interface.h" />
+    <ClInclude Include="sha3\SnP-Relaned.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ref10\pow22523.q" />
     <None Include="ref10\q2h.sh" />
     <None Include="ref10\sqrtm1.py" />
+    <None Include="sha3\KeccakF-1600-64.macros" />
+    <None Include="sha3\KeccakF-1600-unrolling.macros" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

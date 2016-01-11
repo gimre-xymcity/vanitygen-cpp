@@ -8,7 +8,7 @@
 
 #include "cppformat/format.h"
 #include "leanmean/optionparser.h"
-#include "sha3/KeccakNISTInterface.h"
+#include "sha3/KeccakHash.h"
 
 #include <algorithm>
 #include <filesystem>
@@ -129,10 +129,10 @@ bool verifySha3_256_Line(const std::string& line) {
 	}
 	inputStringToData(dataString, length * 2, dataBin.data());
 
-	hashState hctx;
-	Init(&hctx, 256);
-	Update(&hctx, dataBin.data(), length * 8);
-	Final(&hctx, computedHash.data());
+	Keccak_HashInstance hctx;
+	Keccak_HashInitialize_SHA3_256(&hctx);
+	Keccak_HashUpdate(&hctx, dataBin.data(), length * 8);
+	Keccak_HashSqueeze(&hctx, computedHash.data(), 256);
 
 	if (memcmp(expectedHash.data(), computedHash.data(), 32)) {
 		fmt::print("\nERROR\n");

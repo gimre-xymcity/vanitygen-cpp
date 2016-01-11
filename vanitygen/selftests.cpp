@@ -2,7 +2,7 @@
 
 #include "nemaddress.h"
 #include "cppformat/format.h"
-#include "sha3/KeccakNISTInterface.h"
+#include "sha3/KeccakHash.h"
 
 #define erro(strfmt, ...) do { fmt::print(" [!] "); fmt::print(strfmt, __VA_ARGS__); fmt::print("\n"); } while(0)
 #define succ(strfmt, ...) do { fmt::print(" [+] "); fmt::print(strfmt, __VA_ARGS__); fmt::print("\n"); } while(0)
@@ -49,23 +49,23 @@ static bool sha3selfTest()
 
 	unsigned char result[32];
 
-	hashState _hctx, *hctx = &_hctx;
-	Init(hctx, 256);
-	Update(hctx, data, (sizeof(data) - 1) * 8);
-	Final(hctx, result);
+	Keccak_HashInstance _hctx, *hctx = &_hctx;
+	Keccak_HashInitialize_SHA3_256(hctx);
+	Keccak_HashUpdate(hctx, data, (sizeof(data) - 1) * 8);
+	Keccak_HashSqueeze(hctx, result, 256);
 
 	if (memcmp(result, expected, 32)) {
 		fmt::print("\n");
 		{
 			fmt::MemoryWriter out;
-			for (size_t i = 0; i < sizeof(result); ++i) {
+			for (size_t i = 0; i < 32; ++i) {
 				out.write("{:02x}", result[i]);
 			}
 			fmt::print("{}\n", out.c_str());
 		}
 		{
 			fmt::MemoryWriter out;
-			for (size_t i = 0; i < sizeof(expected); ++i) {
+			for (size_t i = 0; i < 32; ++i) {
 				out.write("{:02x}", expected[i]);
 			}
 			fmt::print("{}\n", out.c_str());
@@ -86,10 +86,10 @@ static bool sha3512selfTest()
 
 	unsigned char result[64];
 
-	hashState _hctx, *hctx = &_hctx;
-	Init(hctx, 512);
-	Update(hctx, data, (sizeof(data) - 1) * 8);
-	Final(hctx, result);
+	Keccak_HashInstance _hctx, *hctx = &_hctx;
+	Keccak_HashInitialize_SHA3_512(hctx);
+	Keccak_HashUpdate(hctx, data, (sizeof(data) - 1) * 8);
+	Keccak_HashSqueeze(hctx, result, 512);
 
 	if (memcmp(result, expected, 64)) {
 		erro("SELF TEST (sha3-512): failed");
@@ -98,6 +98,13 @@ static bool sha3512selfTest()
 	succ("SELF TEST (sha3-512): OK");
 
 	fmt::print("sha3512 : {}\n", hexPrinter(result));
+	const char data2[] = "Hello, world!";
+	Keccak_HashInitialize_SHA3_512(hctx);
+	Keccak_HashUpdate(hctx, (unsigned char*)data2, (sizeof(data2) - 1) * 8);
+	Keccak_HashSqueeze(hctx, result, 512);
+
+	fmt::print("sha3512 : {}\n", hexPrinter(result));
+
 	return true;
 }
 
@@ -112,7 +119,6 @@ static bool ripemd160selfTest()
 
 	computeRIPEMD160(data, sizeof(data) - 1, result);
 
-
 	if (memcmp(result, expected, 20)) {
 		erro("SELF TEST (ripemd160): failed");
 		return false;
@@ -126,7 +132,6 @@ static bool addressSelfTest()
 	const unsigned char data[] = "\xc5\x24\x77\x38\xc3\xa5\x10\xfb\x6c\x11\x41\x33\x31\xd8\xa4\x77\x64\xf6\xe7\x8f\xfc\xdb\x02\xb6\x87\x8d\x5d\xd3\xb7\x7f\x38\xed";
 	char address[41];
 	calculateAddress(data, sizeof(data) - 1, address);
-
 
 	if (strcmp(address, "NAPRILC6USCTAY7NNXB4COVKQJL427NPCEERGKS6")) {
 		erro("SELF TEST (address): failed");

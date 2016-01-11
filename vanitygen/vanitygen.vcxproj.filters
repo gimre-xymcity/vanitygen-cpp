@@ -2,15 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="sha3\keccak.cpp">
-      <Filter>sha3</Filter>
-    </ClCompile>
-    <ClCompile Include="sha3\KeccakNISTInterface.cpp">
-      <Filter>sha3</Filter>
-    </ClCompile>
-    <ClCompile Include="sha3\KeccakSponge.cpp">
-      <Filter>sha3</Filter>
-    </ClCompile>
     <ClCompile Include="ripemd160\ripemd160.cpp">
       <Filter>ripemd160</Filter>
     </ClCompile>
@@ -155,6 +146,15 @@
     <ClCompile Include="PcgRandom.cpp" />
     <ClCompile Include="KeyGenerator.cpp" />
     <ClCompile Include="DsaSigner.cpp" />
+    <ClCompile Include="sha3\KeccakF-1600-opt64.cpp">
+      <Filter>sha3</Filter>
+    </ClCompile>
+    <ClCompile Include="sha3\KeccakHash.cpp">
+      <Filter>sha3</Filter>
+    </ClCompile>
+    <ClCompile Include="sha3\KeccakSponge.cpp">
+      <Filter>sha3</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="sha3">
@@ -180,15 +180,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="sha3\KeccakF-1600-interface.h">
-      <Filter>sha3</Filter>
-    </ClInclude>
-    <ClInclude Include="sha3\KeccakNISTInterface.h">
-      <Filter>sha3</Filter>
-    </ClInclude>
-    <ClInclude Include="sha3\KeccakSponge.h">
-      <Filter>sha3</Filter>
-    </ClInclude>
     <ClInclude Include="base32\base32.h">
       <Filter>base32</Filter>
     </ClInclude>
@@ -281,6 +272,27 @@
     <ClInclude Include="PcgRandom.h" />
     <ClInclude Include="DsaSigner.h" />
     <ClInclude Include="nemTypes.h" />
+    <ClInclude Include="sha3\brg_endian.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="sha3\KeccakF-1600-interface.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="sha3\KeccakF-1600-opt64-settings.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="sha3\SnP-interface.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="sha3\SnP-Relaned.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="sha3\KeccakHash.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
+    <ClInclude Include="sha3\KeccakSponge.h">
+      <Filter>sha3</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ref10\pow22523.q">
@@ -291,6 +303,12 @@
     </None>
     <None Include="ref10\sqrtm1.py">
       <Filter>ref10</Filter>
+    </None>
+    <None Include="sha3\KeccakF-1600-64.macros">
+      <Filter>sha3</Filter>
+    </None>
+    <None Include="sha3\KeccakF-1600-unrolling.macros">
+      <Filter>sha3</Filter>
     </None>
   </ItemGroup>
 </Project>
