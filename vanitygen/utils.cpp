@@ -1,5 +1,6 @@
 #include "utils.h"
 
+#include <iterator>
 #include <string>
 
 void randombytes(unsigned char* _data, size_t dataSize)
@@ -51,7 +52,7 @@ class Line : public std::string
 };
 
 void forLineInFile(std::istream& inputFile, std::function<bool(const std::string&)> callback)
-{	
+{
 	typedef std::istream_iterator<Line> LineIt;
 
 	for (auto it = LineIt(inputFile), _it = LineIt(); it != _it; ++it) {

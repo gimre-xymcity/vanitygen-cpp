@@ -15,6 +15,7 @@
 #include <memory>
 #include <regex>
 #include <string>
+#include <fstream>
 
 #include <memory.h>
 #include <stdint.h>
@@ -38,15 +39,15 @@ public:
 	friend std::ostream& operator<<(std::ostream &os, const HexPrinter &self) {
 		fmt::MemoryWriter out;
 		if (self.m_reversed) {
-			for (int i = ArrayType::_EEN_SIZE - 1; i >= 0; --i) {
+			for (int i = static_cast<int>(std::tuple_size<ArrayType>()) - 1; i >= 0; --i) {
 				out.write("{:02x}", self.m_key[i]);
 			}
 		} else {
-			for (size_t i = 0; i < ArrayType::_EEN_SIZE; ++i) {
+			for (size_t i = 0; i < std::tuple_size<ArrayType>(); ++i) {
 				out.write("{:02x}", self.m_key[i]);
 			}
 		}
-		
+
 		return os << out.c_str();
 	}
 private:
@@ -71,11 +72,11 @@ void runGenerator(const std::string& needle) {
 
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-	
+
 	while (true)
 	{
 		KeyPair keyPair{ keyGenerator };
-		
+
 		calculateAddress(keyPair.getPublicKey().data(), 32, address);
 		c++;
 
@@ -91,10 +92,10 @@ void runGenerator(const std::string& needle) {
 			// NOTE: we need to print the private key reversed to be compatible with NIS/NCC
 			fmt::print("priv: {}\n", hexPrinter(keyPair.getPrivateKey(), true));
 			fmt::print("pub : {}\n", hexPrinter(keyPair.getPublicKey()));
-			printf("addr: %.*s", pos-address, address);
+			printf("addr: %.*s", (int)(pos-address), address);
 
 			SetConsoleTextAttribute(hConsole, FOREGROUND_INTENSITY | FOREGROUND_GREEN);
-			printf("%.*s", needle.size(), pos);
+			printf("%.*s", (int)needle.size(), pos);
 			SetConsoleTextAttribute(hConsole, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 
 			printf("%s\n", pos + needle.size());
@@ -153,7 +154,7 @@ bool verifyKeysLine(const std::string& line) {
 		fmt::print("couldn't match following line\n{}", line);
 		return false;
 	}
-	
+
 	nem::Key privateKey;
 	nem::Key expectedPublicKey;
 	char address[42];
@@ -161,10 +162,10 @@ bool verifyKeysLine(const std::string& line) {
 
 	inputStringToPrivateKey(sm[1], privateKey.data());
 	inputStringToData(sm[3], 64, expectedPublicKey.data());
-	
+
 	KeyPair keyPair{ privateKey };
 	calculateAddress(keyPair.getPublicKey().data(), 32, address);
-	
+
 	if (memcmp(expectedPublicKey.data(), keyPair.getPublicKey().data(), keyPair.getPublicKey().size()) ||
 		expectedAddress != address) {
 		fmt::print("\nERROR\n");
@@ -258,7 +259,7 @@ void runTestSha3OnFile(const std::string& filename) {
 	fmt::print("\n{:10d} TEST sha-3: OK!\n", c);
 }
 
-void runTestKeysOnFile(const std::string& filename) {	
+void runTestKeysOnFile(const std::string& filename) {
 	std::ifstream inputFile(filename);
 
 	uint64_t c = 0;
@@ -278,7 +279,7 @@ void runTestKeysOnFile(const std::string& filename) {
 			fmt::print("\r{:10d} tested keys", c);
 		}
 		return true;
-	});	
+	});
 
 	fmt::print("\n{:10d} TEST keys and addresses: OK!\n", c);
 }
@@ -311,7 +312,7 @@ void runTestSigningOnFile(const std::string& filename) {
 void printUsage()
 {
 	fmt::print(R"(
-Usage: 
+Usage:
 	vanitygen.exe <string-to-search>
 )");
 }
@@ -357,10 +358,10 @@ void usageHelper(const char* str, int size) {
 }
 
 int main(int argc, char** argv) {
-	
+
 	argc -= (argc > 0);
 	argv += (argc > 0);
-	
+
 	option::Stats  stats(usage, argc, argv);
 
 	option::Option *options = new option::Option[stats.options_max];
